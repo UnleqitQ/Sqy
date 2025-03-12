@@ -1,0 +1,22 @@
+name: Sqy
+version: '${version}'
+main: com.unleqitq.sqy.Sqy
+api-version: '1.21'
+authors: [UnleqitQ]
+website: https://www.unleqitq.com
+permissions:
+  sqy.use:
+    description: Allows the player to use the base command of Sqy
+    default: op
+  sqy.reload:
+    description: Allows the player to reload the configuration of Sqy
+    default: op
+  sqy.command.use:
+    description: Allows the player to use the command spy feature of Sqy
+    default: op
+  sqy.command.bypass:
+    description: Protects the player from being spied by the command spy feature of Sqy
+    default: op
+  sqy.command.list.others:
+    description: Allows the player to list who other players are spying on
+    default: op

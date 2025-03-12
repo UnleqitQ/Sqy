@@ -1,0 +1,4 @@
+# Timezone to show the time in
+# Valid values are explained at: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/ZoneId.html#of(java.lang.String)
+# For region based ids view: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/ZoneId.html#SHORT_IDS
+time-zone: 'ECT'
