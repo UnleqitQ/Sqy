@@ -14,9 +14,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,14 +31,39 @@ public final class Sqy extends JavaPlugin {
 	
 	public String timeZone;
 	
+	private BukkitTask updateCheckTask;
+	
 	@Override
 	public void onEnable() {
 		instance = this;
+		cleanup();
+		UpdateChecker.scheduleUpdateCheck(task -> updateCheckTask = task);
 		commandSpyHandler = new CommandSpyHandler();
 		commandSpyHandler.load();
 		getLifecycleManager().registerEventHandler(
 			LifecycleEvents.COMMANDS, event -> registerCommands(event.registrar()));
 		onReload();
+	}
+	
+	public void cleanup() {
+		UpdateChecker.VersionInfo currentVersion =
+			UpdateChecker.VersionInfo.fromString(getPluginMeta().getVersion());
+		for (File file : Objects.requireNonNull(getServer().getPluginsFolder()
+			.listFiles((dir, name) -> name.startsWith("Sqy-") && name.endsWith(".jar")))) {
+			String fileName = file.getName();
+			String versionString = fileName.substring(4, fileName.length() - 4);
+			try {
+				UpdateChecker.VersionInfo version = UpdateChecker.VersionInfo.fromString(versionString);
+				if (currentVersion.isNewerThan(version)) {
+					if (!file.delete()) {
+						getLogger().warning("Failed to delete outdated plugin file: " + file.getName());
+					}
+				}
+			}
+			catch (IllegalArgumentException e) {
+				getLogger().warning("Failed to parse version from file name: " + file.getName());
+			}
+		}
 	}
 	
 	private void onReload() {
@@ -394,6 +421,14 @@ public final class Sqy extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		commandSpyHandler.unload();
+		if (updateCheckTask != null) {
+			try {
+				updateCheckTask.cancel();
+			}
+			catch (IllegalStateException e) {
+				// Ignore
+			}
+		}
 		instance = null;
 	}
 	
