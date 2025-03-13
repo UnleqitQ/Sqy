@@ -64,7 +64,6 @@ public class CommandSpyHandler implements Listener {
 		UUID uuid = player.getUniqueId();
 		Set<UUID> spies = getSpyingPlayers(uuid);
 		if (spies == null || spies.isEmpty()) return;
-		long time = System.currentTimeMillis();
 		ZoneId zoneId;
 		try {
 			zoneId = ZoneId.of(Sqy.getInstance().timeZone, ZoneId.SHORT_IDS);
