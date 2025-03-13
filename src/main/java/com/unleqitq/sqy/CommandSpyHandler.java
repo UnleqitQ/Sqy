@@ -19,6 +19,7 @@ public class CommandSpyHandler implements Listener {
 	
 	private final Map<UUID, Set<UUID>> spyingPlayers = new HashMap<>();
 	private final Map<UUID, Set<UUID>> spiedPlayers = new HashMap<>();
+	private final Set<UUID> globalSpies = new HashSet<>();
 	
 	public void load() {
 		Bukkit.getPluginManager().registerEvents(this, Sqy.getInstance());
