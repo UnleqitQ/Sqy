@@ -226,7 +226,7 @@ public final class Sqy extends JavaPlugin {
 					Component.text("You can't spy on yourself").color(NamedTextColor.DARK_RED)));
 				return 0;
 			}
-			if (sender.hasPermission("sqy.command.bypass")) {
+			if (player.hasPermission("sqy.command.bypass")) {
 				sender.sendMessage(getPrefix().append(
 					Component.text("You can't spy on this player").color(NamedTextColor.DARK_RED)));
 				return 0;
