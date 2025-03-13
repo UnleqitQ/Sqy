@@ -235,6 +235,7 @@ public final class Sqy extends JavaPlugin {
 			if (commandSpyHandler.isSpying(sender.getUniqueId(), player.getUniqueId())) {
 				sender.sendMessage(getPrefix().append(
 					Component.text("You are already spying on this player").color(NamedTextColor.DARK_RED)));
+				return 0;
 			}
 			commandSpyHandler.addSpy(sender.getUniqueId(), player.getUniqueId());
 			sender.sendMessage(getPrefix().append(
@@ -282,6 +283,7 @@ public final class Sqy extends JavaPlugin {
 			if (!commandSpyHandler.isSpying(sender.getUniqueId(), player.getUniqueId())) {
 				sender.sendMessage(getPrefix().append(
 					Component.text("You are not spying on this player").color(NamedTextColor.DARK_RED)));
+				return 0;
 			}
 			commandSpyHandler.removeSpy(sender.getUniqueId(), player.getUniqueId());
 			sender.sendMessage(getPrefix().append(
