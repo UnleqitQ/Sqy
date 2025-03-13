@@ -184,6 +184,24 @@ public final class Sqy extends JavaPlugin {
 								.hoverEvent(HoverEvent.showText(
 									Component.text("Player to check").color(NamedTextColor.GRAY))))));
 			}
+			if (sender.hasPermission("sqy.command.global")) {
+				sender.sendMessage(
+					getPrefix().append(Component.text("    /spy command ").color(NamedTextColor.DARK_RED))
+						.append(Component.text("global")
+							.color(NamedTextColor.DARK_PURPLE)
+							.hoverEvent(HoverEvent.showText(
+								Component.text("Spy on all players").color(NamedTextColor.GRAY))))
+						.appendSpace()
+						.append(Component.text("on")
+							.color(NamedTextColor.DARK_PURPLE)
+							.hoverEvent(HoverEvent.showText(
+								Component.text("Start spying on all players").color(NamedTextColor.GRAY))))
+						.append(Component.text("|").color(NamedTextColor.DARK_RED))
+						.append(Component.text("off")
+							.color(NamedTextColor.DARK_PURPLE)
+							.hoverEvent(HoverEvent.showText(
+								Component.text("Stop spying on all players").color(NamedTextColor.GRAY)))));
+			}
 			return 0;
 		});
 		command.then(Commands.literal("on").executes(ctx -> {
