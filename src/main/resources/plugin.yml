@@ -20,3 +20,6 @@ permissions:
   sqy.command.list.others:
     description: Allows the player to list who other players are spying on
     default: op
+  sqy.command.global:
+    description: Allows the player to spy on all players
+    default: op

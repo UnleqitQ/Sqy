@@ -78,7 +78,7 @@ public final class Sqy extends JavaPlugin {
 	
 	public static @NotNull Component getPrefix(@NotNull String label) {
 		return Component.text("")
-			.append(Component.text("[%s]".formatted(label))
+			.append(Component.text("[%s]" .formatted(label))
 				.color(NamedTextColor.GOLD)
 				.decorate(TextDecoration.BOLD)
 				.hoverEvent(HoverEvent.showText(
@@ -183,6 +183,24 @@ public final class Sqy extends JavaPlugin {
 								.color(NamedTextColor.DARK_PURPLE)
 								.hoverEvent(HoverEvent.showText(
 									Component.text("Player to check").color(NamedTextColor.GRAY))))));
+			}
+			if (sender.hasPermission("sqy.command.global")) {
+				sender.sendMessage(
+					getPrefix().append(Component.text("    /spy command ").color(NamedTextColor.DARK_RED))
+						.append(Component.text("global")
+							.color(NamedTextColor.DARK_PURPLE)
+							.hoverEvent(HoverEvent.showText(
+								Component.text("Spy on all players").color(NamedTextColor.GRAY))))
+						.appendSpace()
+						.append(Component.text("on")
+							.color(NamedTextColor.DARK_PURPLE)
+							.hoverEvent(HoverEvent.showText(
+								Component.text("Start spying on all players").color(NamedTextColor.GRAY))))
+						.append(Component.text("|").color(NamedTextColor.DARK_RED))
+						.append(Component.text("off")
+							.color(NamedTextColor.DARK_PURPLE)
+							.hoverEvent(HoverEvent.showText(
+								Component.text("Stop spying on all players").color(NamedTextColor.GRAY)))));
 			}
 			return 0;
 		});
@@ -291,9 +309,59 @@ public final class Sqy extends JavaPlugin {
 					.color(NamedTextColor.GREEN)));
 			return 1;
 		})));
+		command.then(Commands.literal("global")
+			.requires(ctx -> ctx.getSender().hasPermission("sqy.command.global"))
+			.executes(ctx -> {
+				CommandSender sender = ctx.getSource().getSender();
+				sender.sendMessage(
+					getPrefix().append(Component.text("Missing subcommand").color(NamedTextColor.DARK_RED)));
+				sender.sendMessage(getPrefix().append(Component.text("Usage: ")
+					.color(NamedTextColor.DARK_RED)
+					.append(Component.text("/spy command global ").color(NamedTextColor.DARK_RED))
+					.append(Component.text("on")
+						.color(NamedTextColor.DARK_PURPLE)
+						.hoverEvent(HoverEvent.showText(
+							Component.text("Start spying on all players").color(NamedTextColor.GRAY))))
+					.append(Component.text("|").color(NamedTextColor.DARK_RED))
+					.append(Component.text("off")
+						.color(NamedTextColor.DARK_PURPLE)
+						.hoverEvent(HoverEvent.showText(
+							Component.text("Stop spying on all players").color(NamedTextColor.GRAY))))));
+				return 0;
+			})
+			.then(Commands.literal("on").executes(ctx -> {
+				Player sender = (Player) ctx.getSource().getSender();
+				if (commandSpyHandler.isGlobalSpy(sender.getUniqueId())) {
+					sender.sendMessage(getPrefix().append(
+						Component.text("You are already spying on all players")
+							.color(NamedTextColor.DARK_RED)));
+					return 0;
+				}
+				commandSpyHandler.addGlobalSpy(sender.getUniqueId());
+				sender.sendMessage(getPrefix().append(
+					Component.text("You are now spying on all players").color(NamedTextColor.GREEN)));
+				return 1;
+			}))
+			.then(Commands.literal("off").executes(ctx -> {
+				Player sender = (Player) ctx.getSource().getSender();
+				if (!commandSpyHandler.isGlobalSpy(sender.getUniqueId())) {
+					sender.sendMessage(getPrefix().append(
+						Component.text("You are not spying on all players").color(NamedTextColor.DARK_RED)));
+					return 0;
+				}
+				commandSpyHandler.removeGlobalSpy(sender.getUniqueId());
+				sender.sendMessage(getPrefix().append(
+					Component.text("You are no longer spying on all players").color(NamedTextColor.GREEN)));
+				return 1;
+			})));
 		command.then(Commands.literal("list")
 			.executes(ctx -> {
 				Player sender = (Player) ctx.getSource().getSender();
+				if (commandSpyHandler.isGlobalSpy(sender.getUniqueId())) {
+					sender.sendMessage(getPrefix().append(
+						Component.text("You are spying on all players").color(NamedTextColor.GREEN)));
+					return 1;
+				}
 				if (commandSpyHandler.getSpiedPlayers(sender.getUniqueId()).isEmpty()) {
 					sender.sendMessage(getPrefix().append(
 						Component.text("You are not spying on anyone").color(NamedTextColor.GREEN)));
@@ -372,6 +440,12 @@ public final class Sqy extends JavaPlugin {
 						return 0;
 					}
 					
+					if (commandSpyHandler.isGlobalSpy(player.getUniqueId())) {
+						sender.sendMessage(getPrefix().append(
+							Component.text(playerName + " is spying on all players")
+								.color(NamedTextColor.GREEN)));
+						return 1;
+					}
 					if (commandSpyHandler.getSpiedPlayers(player.getUniqueId()).isEmpty()) {
 						sender.sendMessage(getPrefix().append(
 							Component.text(playerName + " is not spying on anyone").color(NamedTextColor.GREEN)));

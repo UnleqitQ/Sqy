@@ -1,5 +1,6 @@
 package com.unleqitq.sqy;
 
+import com.google.common.collect.Streams;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -14,11 +15,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandSpyHandler implements Listener {
 	
 	private final Map<UUID, Set<UUID>> spyingPlayers = new HashMap<>();
 	private final Map<UUID, Set<UUID>> spiedPlayers = new HashMap<>();
+	private final Set<UUID> globalSpies = new HashSet<>();
 	
 	public void load() {
 		Bukkit.getPluginManager().registerEvents(this, Sqy.getInstance());
@@ -31,7 +34,8 @@ public class CommandSpyHandler implements Listener {
 	}
 	
 	public Set<UUID> getSpyingPlayers(UUID uuid) {
-		return spiedPlayers.getOrDefault(uuid, Set.of());
+		return Streams.concat(spiedPlayers.getOrDefault(uuid, Set.of()).stream(), globalSpies.stream())
+			.collect(Collectors.toSet());
 	}
 	
 	public Set<UUID> getSpiedPlayers(UUID uuid) {
@@ -50,6 +54,18 @@ public class CommandSpyHandler implements Listener {
 	
 	public boolean isSpying(UUID spy, UUID spied) {
 		return spyingPlayers.getOrDefault(spy, Set.of()).contains(spied);
+	}
+	
+	public void addGlobalSpy(UUID spy) {
+		globalSpies.add(spy);
+	}
+	
+	public void removeGlobalSpy(UUID spy) {
+		globalSpies.remove(spy);
+	}
+	
+	public boolean isGlobalSpy(UUID spy) {
+		return globalSpies.contains(spy);
 	}
 	
 	@EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -80,6 +96,7 @@ public class CommandSpyHandler implements Listener {
 				.clickEvent(ClickEvent.suggestCommand(event.getMessage()))
 				.hoverEvent(HoverEvent.showText(Component.text("Click to paste this command in chat"))));
 		for (UUID spy : spies) {
+			if (spy.equals(uuid)) continue;
 			Player spyPlayer = Bukkit.getPlayer(spy);
 			if (spyPlayer != null && spyPlayer.canSee(player) &&
 				spyPlayer.hasPermission("sqy.command.use")) {
