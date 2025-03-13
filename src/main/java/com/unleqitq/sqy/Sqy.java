@@ -339,6 +339,11 @@ public final class Sqy extends JavaPlugin {
 		command.then(Commands.literal("list")
 			.executes(ctx -> {
 				Player sender = (Player) ctx.getSource().getSender();
+				if (commandSpyHandler.isGlobalSpy(sender.getUniqueId())) {
+					sender.sendMessage(getPrefix().append(
+						Component.text("You are spying on all players").color(NamedTextColor.GREEN)));
+					return 1;
+				}
 				if (commandSpyHandler.getSpiedPlayers(sender.getUniqueId()).isEmpty()) {
 					sender.sendMessage(getPrefix().append(
 						Component.text("You are not spying on anyone").color(NamedTextColor.GREEN)));
@@ -417,6 +422,12 @@ public final class Sqy extends JavaPlugin {
 						return 0;
 					}
 					
+					if (commandSpyHandler.isGlobalSpy(player.getUniqueId())) {
+						sender.sendMessage(getPrefix().append(
+							Component.text(playerName + " is spying on all players")
+								.color(NamedTextColor.GREEN)));
+						return 1;
+					}
 					if (commandSpyHandler.getSpiedPlayers(player.getUniqueId()).isEmpty()) {
 						sender.sendMessage(getPrefix().append(
 							Component.text(playerName + " is not spying on anyone").color(NamedTextColor.GREEN)));
