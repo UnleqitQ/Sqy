@@ -1,5 +1,6 @@
 package com.unleqitq.sqy;
 
+import com.google.common.collect.Streams;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CommandSpyHandler implements Listener {
 	
@@ -32,7 +34,8 @@ public class CommandSpyHandler implements Listener {
 	}
 	
 	public Set<UUID> getSpyingPlayers(UUID uuid) {
-		return spiedPlayers.getOrDefault(uuid, Set.of());
+		return Streams.concat(spiedPlayers.getOrDefault(uuid, Set.of()).stream(), globalSpies.stream())
+			.collect(Collectors.toSet());
 	}
 	
 	public Set<UUID> getSpiedPlayers(UUID uuid) {
