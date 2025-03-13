@@ -2,6 +2,7 @@ package com.unleqitq.sqy;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -76,7 +77,8 @@ public class CommandSpyHandler implements Listener {
 				.color(NamedTextColor.WHITE)
 				.decorate(TextDecoration.ITALIC)
 				.decorate(TextDecoration.BOLD)
-				.clickEvent(ClickEvent.suggestCommand(event.getMessage())));
+				.clickEvent(ClickEvent.suggestCommand(event.getMessage()))
+				.hoverEvent(HoverEvent.showText(Component.text("Click to paste this command in chat"))));
 		for (UUID spy : spies) {
 			Player spyPlayer = Bukkit.getPlayer(spy);
 			if (spyPlayer != null && spyPlayer.canSee(player) &&
