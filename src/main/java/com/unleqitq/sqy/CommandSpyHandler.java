@@ -12,9 +12,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.time.Clock;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class CommandSpyHandler implements Listener {
@@ -64,15 +61,14 @@ public class CommandSpyHandler implements Listener {
 		UUID uuid = player.getUniqueId();
 		Set<UUID> spies = getSpyingPlayers(uuid);
 		if (spies == null || spies.isEmpty()) return;
-		ZoneId zoneId;
-		try {
-			zoneId = ZoneId.of(Sqy.getInstance().timeZone, ZoneId.SHORT_IDS);
-		}
-		catch (Exception e) {
-			zoneId = ZoneId.systemDefault();
-		}
-		String formattedTime =
-			DateTimeFormatter.ofPattern("HH:mm:ss").format(Clock.system(zoneId).instant());
+		// TODO: Add back time and date
+		// I fucking hate how time and date is handled in every language (well c++ is kinda chill)
+		// This is so bs!!!
+		// I just want an object,
+		// that contains the current time and date not an object
+		// that seems like it should contain both
+		// but only contains the time and another that only contains the date
+		// like wtf, why is this so hard?????
 		Component message = Sqy.getPrefix("CmdSqy")
 			.append(player.name().color(NamedTextColor.GRAY))
 			.append(Component.text(" -> ").color(NamedTextColor.DARK_GRAY))
@@ -80,12 +76,7 @@ public class CommandSpyHandler implements Listener {
 				.color(NamedTextColor.WHITE)
 				.decorate(TextDecoration.ITALIC)
 				.decorate(TextDecoration.BOLD)
-				.clickEvent(ClickEvent.suggestCommand(event.getMessage())))
-			.appendSpace()
-			.append(Component.text("[")
-				.color(NamedTextColor.DARK_GRAY)
-				.append(Component.text(formattedTime).color(NamedTextColor.GRAY))
-				.append(Component.text("]").color(NamedTextColor.DARK_GRAY)));
+				.clickEvent(ClickEvent.suggestCommand(event.getMessage())));
 		for (UUID spy : spies) {
 			Player spyPlayer = Bukkit.getPlayer(spy);
 			if (spyPlayer != null && spyPlayer.canSee(player) &&
