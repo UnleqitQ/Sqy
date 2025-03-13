@@ -53,6 +53,18 @@ public class CommandSpyHandler implements Listener {
 		return spyingPlayers.getOrDefault(spy, Set.of()).contains(spied);
 	}
 	
+	public void addGlobalSpy(UUID spy) {
+		globalSpies.add(spy);
+	}
+	
+	public void removeGlobalSpy(UUID spy) {
+		globalSpies.remove(spy);
+	}
+	
+	public boolean isGlobalSpy(UUID spy) {
+		return globalSpies.contains(spy);
+	}
+	
 	@EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCommand(
 		PlayerCommandPreprocessEvent event
