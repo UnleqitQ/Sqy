@@ -96,6 +96,7 @@ public class CommandSpyHandler implements Listener {
 				.clickEvent(ClickEvent.suggestCommand(event.getMessage()))
 				.hoverEvent(HoverEvent.showText(Component.text("Click to paste this command in chat"))));
 		for (UUID spy : spies) {
+			if (spy.equals(uuid)) continue;
 			Player spyPlayer = Bukkit.getPlayer(spy);
 			if (spyPlayer != null && spyPlayer.canSee(player) &&
 				spyPlayer.hasPermission("sqy.command.use")) {
